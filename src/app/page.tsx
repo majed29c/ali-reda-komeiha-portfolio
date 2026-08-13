@@ -1,69 +1,58 @@
-import Image from "next/image";
+import type { Metadata } from "next";
+import About from "@/components/About";
+import Contact from "@/components/Contact";
+import Footer from "@/components/Footer";
+import Hero from "@/components/Hero";
+import Nav from "@/components/Nav";
+import Offline from "@/components/Offline";
+import Services from "@/components/Services";
+import Work from "@/components/Work";
+import { getWorkSections } from "@/lib/work";
 import styles from "./page.module.css";
 
-export default function Home() {
+/**
+ * Master switch for the portfolio.
+ *
+ *   true  — the full site renders.
+ *   false — only the holding page renders; none of the real markup is sent to
+ *           the browser, and the page is marked noindex.
+ *
+ * Flip this and redeploy. To toggle it without a redeploy, read an environment
+ * variable instead: `const SITE_ENABLED = process.env.SITE_ENABLED !== "false";`
+ */
+const SITE_ENABLED = true;
+
+export const metadata: Metadata = SITE_ENABLED
+  ? {}
+  : {
+      // Also overrides the layout's title/description so the portfolio is not
+      // described in the page source or in link previews while it is off.
+      title: "Temporarily offline",
+      description: "This site is temporarily offline.",
+      robots: { index: false, follow: false },
+      openGraph: {
+        title: "Temporarily offline",
+        description: "This site is temporarily offline.",
+        type: "website",
+      },
+    };
+
+export default async function Home() {
+  if (!SITE_ENABLED) return <Offline />;
+
+  const sections = await getWorkSections();
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>
-            To get started, edit the{" "}
-            <code className={styles.code}>page.tsx</code> file.
-          </h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+    <div className={styles.shell}>
+      <div id="top" className={styles.inner}>
+        <Nav />
+        <Hero />
+        <About />
+        <Work sections={sections} />
+        <Services />
+        <Contact />
+        <Footer />
+      </div>
     </div>
   );
 }

@@ -1,36 +1,78 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Ali Komeiha — Video Editor & Filmmaker
 
-## Getting Started
+Single-page portfolio built with Next.js (App Router) and CSS Modules, implemented from
+`design_handoff_video_editor_portfolio/`.
 
-First, run the development server:
+## Getting started
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+src/app/page.tsx          Page composition (server component; loads the work data)
+src/app/globals.css       Design tokens + base styles
+src/lib/site.ts           Name, contact links, photo paths
+src/lib/work.ts           Work data: Google Sheet CSV loader + fallback
 
-## Learn More
+src/components/
+  Nav/                    Nav.tsx, MobileMenu.tsx (burger + drawer), CSS modules
+  Hero/  About/  Work/  Services/  Contact/  Footer/
+  icons/                  Inline 24×24 stroke icons from the hand-off
+```
 
-To learn more about Next.js, take a look at the following resources:
+Each folder keeps its component, any sub-components and its CSS modules together,
+with an `index.ts` barrel so imports stay `@/components/Hero`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Below 720px the inline nav links and "Get in touch" pill are replaced by a burger
+button that opens a right-hand drawer holding both.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Master switch
 
-## Deploy on Vercel
+`SITE_ENABLED` at the top of [src/app/page.tsx](src/app/page.tsx) turns the whole
+portfolio on and off:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `true` — the full site renders.
+- `false` — only the holding page ([src/components/Offline/](src/components/Offline/))
+  renders. None of the portfolio markup reaches the browser, the title and description
+  are replaced, and the page is marked `noindex, nofollow`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Flip it and redeploy. To toggle without a redeploy, read an environment variable
+instead: `const SITE_ENABLED = process.env.SITE_ENABLED !== "false";`
+
+## Before going live
+
+1. **Contact details** — set the WhatsApp number, email and Instagram URL in
+   [src/lib/site.ts](src/lib/site.ts). They are currently placeholders.
+2. **Photos** — add the hero and About portraits to `public/images/` and point
+   `site.images` at them; see [public/images/README.md](public/images/README.md).
+   Until then a labelled placeholder is shown in each slot.
+
+## Work data (Google Sheet)
+
+The Work carousels read from a published Google Sheet CSV, fetched on the server and
+revalidated hourly. Set:
+
+```bash
+# .env.local
+WORK_SHEET_CSV_URL="https://docs.google.com/spreadsheets/d/e/…/pub?output=csv"
+```
+
+Expected headers (case-insensitive, order does not matter):
+
+| Section | Title | Description | Thumbnail | Duration |
+| ------- | ----- | ----------- | --------- | -------- |
+| UGC & Ads | Skincare UGC Ad | Creator-style ad… | https://… | 0:32 |
+
+Rows are grouped into one carousel per `Section`. Rows without a `Title` are skipped and
+non-`http(s)` thumbnails are dropped. If the variable is unset or the sheet cannot be
+read, the example data in [src/lib/work.ts](src/lib/work.ts) is used instead.
+
+Sheet thumbnails are rendered with a plain `<img>` rather than `next/image`, because the
+image hosts are not known ahead of time. To run them through the optimizer, add the hosts
+to `images.remotePatterns` in [next.config.ts](next.config.ts) and swap the tag in
+[src/components/WorkCarousel.tsx](src/components/WorkCarousel.tsx).

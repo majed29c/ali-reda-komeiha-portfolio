@@ -1,0 +1,78 @@
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 14px 8px 24px;
+}
+
+.wordmark {
+  font-weight: 800;
+  font-size: 20px;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+.dot {
+  color: var(--accent);
+}
+
+.links {
+  display: flex;
+  gap: 32px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.link {
+  color: var(--text-nav);
+  transition: color 0.18s ease;
+}
+
+.link:hover {
+  color: var(--text);
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--text);
+  color: var(--bg);
+  font-weight: 600;
+  font-size: 14px;
+  padding: 10px 8px 10px 20px;
+  border-radius: 999px;
+  white-space: nowrap;
+  transition: background 0.22s ease, color 0.22s ease;
+}
+
+.cta:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
+.ctaBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+}
+
+@media (max-width: 860px) {
+  .links {
+    gap: 22px;
+  }
+}
+
+/* Below this the inline links and pill are replaced by the burger + drawer. */
+@media (max-width: 720px) {
+  .links,
+  .cta {
+    display: none;
+  }
+}

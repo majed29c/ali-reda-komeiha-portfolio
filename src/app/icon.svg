@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Ali Komeiha">
+  <rect width="64" height="64" rx="14" fill="#ff5a1f" />
+  <path d="M29 12 H35 L53 52 H41 L32 29.5 L23 52 H11 Z" fill="#fff" />
+  <rect x="19" y="37.5" width="26" height="6.5" rx="1.5" fill="#fff" />
+</svg>

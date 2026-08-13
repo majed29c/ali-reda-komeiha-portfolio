@@ -1,0 +1,175 @@
+.burger {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.burger:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: rgba(13, 10, 8, 0.72);
+  backdrop-filter: blur(2px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.backdropOpen {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.panel {
+  position: fixed;
+  inset: 0 0 0 auto;
+  z-index: 60;
+  width: min(340px, 86vw);
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  padding: 20px 22px 32px;
+  overflow-y: auto;
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+}
+
+.panelOpen {
+  transform: none;
+}
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.wordmark {
+  font-weight: 800;
+  font-size: 18px;
+  letter-spacing: -0.02em;
+}
+
+.dot {
+  color: var(--accent);
+}
+
+.close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-nav);
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.close:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.links {
+  border-bottom: 1px solid var(--border);
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 2px;
+  border-top: 1px solid var(--border);
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text-nav);
+  transition: color 0.2s ease;
+}
+
+.link:hover {
+  color: var(--text);
+}
+
+.linkChevron {
+  color: var(--text-muted);
+}
+
+.link:hover .linkChevron {
+  color: var(--accent);
+}
+
+.cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 24px;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+  font-size: 15px;
+  padding: 12px 12px 12px 22px;
+  border-radius: 999px;
+  transition: background 0.22s ease;
+}
+
+.cta:hover {
+  background: var(--accent-hover);
+}
+
+.ctaBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #fff;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.availability {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 20px;
+  font-size: 13px;
+  color: var(--text-nav);
+}
+
+.availabilityDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--available);
+}
+
+@media (max-width: 720px) {
+  .burger {
+    display: flex;
+  }
+}

@@ -1,0 +1,102 @@
+.screen {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px var(--gutter);
+  background: var(--bg);
+  overflow: hidden;
+}
+
+/* Faint echo of the hero gradient so the holding page still feels like the site. */
+.glow {
+  position: absolute;
+  inset: -20% -10% auto;
+  height: 70vh;
+  background: radial-gradient(
+    60% 60% at 50% 0%,
+    rgba(255, 90, 31, 0.16) 0%,
+    rgba(255, 90, 31, 0) 70%
+  );
+  pointer-events: none;
+}
+
+.card {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: clamp(32px, 6vw, 48px);
+  text-align: center;
+}
+
+.wordmark {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 28px;
+}
+
+.dot {
+  color: var(--accent);
+}
+
+.iconTile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: var(--accent-tint);
+  color: var(--accent);
+  margin-bottom: 22px;
+}
+
+.heading {
+  margin: 0 0 14px;
+  font-size: clamp(26px, 3.6vw, 36px);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+}
+
+.copy {
+  margin: 0 auto;
+  max-width: 380px;
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.65;
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 30px;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 12px 10px 12px 22px;
+  border-radius: 999px;
+  transition: background 0.22s ease;
+}
+
+.cta:hover {
+  background: var(--accent-hover);
+}
+
+.ctaBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #fff;
+  color: var(--accent);
+}
