@@ -1,0 +1,113 @@
+.frame {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--surface-2);
+  padding: 0;
+  cursor: pointer;
+  transition: border-color 0.25s ease;
+}
+
+.frame:hover {
+  border-color: var(--border-strong);
+}
+
+/*
+ * Layers are absolute rather than grid items on purpose: as grid items their
+ * `width: 100%` would resolve against an auto-sized track, so the poster's
+ * intrinsic 640px would blow the 320px card open. Absolute + inset pins them to
+ * the frame, leaving the badge as the only item the grid has to centre.
+ */
+.layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.poster {
+  object-fit: cover;
+  opacity: 0;
+  transform: scale(1.01);
+  transition: opacity 0.45s ease, transform 0.5s ease;
+}
+
+.poster[data-status="ready"] {
+  opacity: 1;
+  transform: none;
+}
+
+.frame:hover .poster[data-status="ready"] {
+  transform: scale(1.045);
+}
+
+/* Shimmer while Drive's poster is still in flight. */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: var(--surface-2);
+}
+
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(245, 239, 232, 0.06) 50%,
+    transparent 100%
+  );
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+/* Keeps the badge legible over bright posters. */
+.scrim {
+  background: linear-gradient(
+    180deg,
+    rgba(13, 10, 8, 0.1) 0%,
+    rgba(13, 10, 8, 0) 45%,
+    rgba(13, 10, 8, 0.5) 100%
+  );
+  transition: opacity 0.25s ease;
+}
+
+.playBadge {
+  grid-area: 1 / 1;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(13, 10, 8, 0.72);
+  border: 1px solid rgba(245, 239, 232, 0.22);
+  color: #fff;
+  transition: background 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+}
+
+.frame:hover .playBadge,
+.frame:focus-visible .playBadge {
+  background: var(--accent);
+  border-color: var(--accent);
+  transform: scale(1.08);
+}
+
+.unavailable {
+  cursor: default;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 600;
+}

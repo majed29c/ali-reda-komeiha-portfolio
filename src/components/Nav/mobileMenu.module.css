@@ -23,15 +23,18 @@
   inset: 0;
   z-index: 50;
   background: rgba(13, 10, 8, 0.72);
-  backdrop-filter: blur(2px);
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.25s ease;
 }
 
+/* backdrop-filter lives here, not on .backdrop: this element is always in the
+   DOM, and a permanent full-viewport blur layer costs the compositor on every
+   page even while the drawer is shut. */
 .backdropOpen {
   opacity: 1;
   pointer-events: auto;
+  backdrop-filter: blur(2px);
 }
 
 .panel {

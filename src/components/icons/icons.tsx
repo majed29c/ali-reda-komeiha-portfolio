@@ -46,6 +46,26 @@ export function ChevronLeft({ size = 16, strokeWidth = 2.2 }: IconProps) {
   );
 }
 
+/**
+ * Triangle is drawn so its bounding box sits at x 6.8–18.4 — centred on the
+ * viewBox with the usual sliver of optical bias to the right, so the glyph
+ * needs no nudging when it is centred in a round badge.
+ */
+export function Play({ size = 20 }: IconProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path d="M6.8 5.5v13a1 1 0 0 0 1.53.85l10-6.5a1 1 0 0 0 0-1.7l-10-6.5A1 1 0 0 0 6.8 5.5Z" />
+    </svg>
+  );
+}
+
 export function Lock(props: IconProps) {
   return (
     <Svg {...props}>

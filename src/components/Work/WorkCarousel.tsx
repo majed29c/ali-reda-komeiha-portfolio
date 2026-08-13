@@ -1,35 +1,61 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import ProjectVideo from "./ProjectVideo";
 import { ChevronLeft, ChevronRight } from "@/components/icons";
-import type { WorkSection } from "@/lib/work";
+import type { ProjectSection } from "@/lib/getProjects";
 import styles from "./work.module.css";
 
 const EDGE_TOLERANCE = 8;
 
-export default function WorkCarousel({ section }: { section: WorkSection }) {
+export default function WorkCarousel({ section }: { section: ProjectSection }) {
   const rowRef = useRef<HTMLDivElement>(null);
   const [edges, setEdges] = useState({ prev: false, next: false, overflows: false });
+
+  const frameRef = useRef<number | null>(null);
 
   const measure = useCallback(() => {
     const el = rowRef.current;
     if (!el) return;
     const max = el.scrollWidth - el.clientWidth;
-    setEdges({
+    const next = {
       prev: el.scrollLeft > EDGE_TOLERANCE,
       next: el.scrollLeft < max - EDGE_TOLERANCE,
       overflows: max > EDGE_TOLERANCE,
-    });
+    };
+
+    // Hand back the identical object when nothing changed so React bails out.
+    // Building a fresh one every scroll event re-rendered the whole row — and
+    // its cards — dozens of times a second for no visible difference.
+    setEdges((current) =>
+      current.prev === next.prev &&
+      current.next === next.next &&
+      current.overflows === next.overflows
+        ? current
+        : next,
+    );
   }, []);
+
+  /** Scroll fires far faster than paint; collapse it to one measure per frame. */
+  const scheduleMeasure = useCallback(() => {
+    if (frameRef.current !== null) return;
+    frameRef.current = requestAnimationFrame(() => {
+      frameRef.current = null;
+      measure();
+    });
+  }, [measure]);
 
   useEffect(() => {
     const el = rowRef.current;
     if (!el) return;
     measure();
-    const observer = new ResizeObserver(measure);
+    const observer = new ResizeObserver(scheduleMeasure);
     observer.observe(el);
-    return () => observer.disconnect();
-  }, [measure]);
+    return () => {
+      observer.disconnect();
+      if (frameRef.current !== null) cancelAnimationFrame(frameRef.current);
+    };
+  }, [measure, scheduleMeasure]);
 
   const scrollBy = (direction: 1 | -1) => {
     const el = rowRef.current;
@@ -40,7 +66,7 @@ export default function WorkCarousel({ section }: { section: WorkSection }) {
     });
   };
 
-  const count = section.videos.length;
+  const count = section.projects.length;
 
   return (
     <div className={styles.category}>
@@ -73,29 +99,17 @@ export default function WorkCarousel({ section }: { section: WorkSection }) {
         </div>
       </div>
 
-      <div ref={rowRef} className={styles.row} onScroll={measure}>
-        {section.videos.map((video, index) => (
-          <div key={`${video.title}-${index}`} className={styles.card}>
-            <div className={styles.thumb}>
-              {video.thumb ? (
-                /* Thumbnails come from an arbitrary sheet URL, so they are served
-                   as-is rather than through the Next.js image optimizer. */
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  className={styles.thumbImage}
-                  src={video.thumb}
-                  alt={video.title}
-                  loading="lazy"
-                  decoding="async"
-                />
-              ) : null}
-              {video.duration ? (
-                <div className={styles.duration}>▶ {video.duration}</div>
-              ) : null}
-            </div>
-            <div className={styles.cardTitle}>{video.title}</div>
-            {video.description ? (
-              <div className={styles.cardDescription}>{video.description}</div>
+      <div ref={rowRef} className={styles.row} onScroll={scheduleMeasure}>
+        {section.projects.map((project, index) => (
+          <div key={`${project.title}-${index}`} className={styles.card}>
+            <ProjectVideo
+              fileId={project.fileId}
+              title={project.title}
+              description={project.description}
+            />
+            <div className={styles.cardTitle}>{project.title}</div>
+            {project.description ? (
+              <div className={styles.cardDescription}>{project.description}</div>
             ) : null}
           </div>
         ))}

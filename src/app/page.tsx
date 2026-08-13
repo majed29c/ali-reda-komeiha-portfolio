@@ -3,11 +3,12 @@ import About from "@/components/About";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import Hero from "@/components/Hero";
+import LiveRefresh from "@/components/LiveRefresh";
 import Nav from "@/components/Nav";
 import Offline from "@/components/Offline";
 import Services from "@/components/Services";
 import Work from "@/components/Work";
-import { getWorkSections } from "@/lib/work";
+import { getProjects, groupBySection } from "@/lib/getProjects";
 import styles from "./page.module.css";
 
 /**
@@ -40,11 +41,13 @@ export const metadata: Metadata = SITE_ENABLED
 export default async function Home() {
   if (!SITE_ENABLED) return <Offline />;
 
-  const sections = await getWorkSections();
+  const sections = groupBySection(await getProjects());
 
   return (
     <div className={styles.shell}>
       <div id="top" className={styles.inner}>
+        {/* Picks up sheet edits in tabs that are already open. */}
+        <LiveRefresh />
         <Nav />
         <Hero />
         <About />
