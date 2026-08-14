@@ -61,8 +61,8 @@ export default function About() {
           <span className={styles.accentWord}>watching</span>
         </h2>
         <p className={styles.intro}>
-          Video Editor specializing in talking-head, VSL, UGC, ads and cinematic
-          edits — from basic cuts to advanced 3D and motion design.
+          Video Editor specializing in talking-head, VSL, UGC, ads &amp;
+          cinematic edits — from basic cuts to advanced 3D &amp; motion design.
         </p>
 
         {highlights.map(({ Icon, title, sub }) => (

@@ -55,10 +55,25 @@ body {
   overflow-x: hidden;
 }
 
+/*
+ * Every ampersand on the site, in one rule. This face claims a single
+ * character — U+0026 — so listing it first in a stack swaps just the "&" for
+ * the flat, upright one of the OS interface font and leaves every other glyph
+ * to Archivo. Wrapping them in spans could not cover the site anyway: the Work
+ * category names arrive from the Google Sheet, so their ampersands are never
+ * ours to mark up. Falls through to Archivo if none of these are installed.
+ */
+@font-face {
+  font-family: "Plain Ampersand";
+  src: local("Segoe UI"), local("Helvetica Neue"), local("Roboto"),
+    local("Arial");
+  unicode-range: U+0026;
+}
+
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: var(--font-archivo), sans-serif;
+  font-family: "Plain Ampersand", var(--font-archivo), sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

@@ -1,14 +1,14 @@
 /** Single place for the details that change per client hand-off. */
 export const site = {
-  name: "Ali Komeiha",
+  name: "Ali Reda Km",
   role: "Video Editor & Visual Storyteller",
   year: 2026,
 
   /** Counts up when the About section scrolls into view. */
   stats: [
     { value: 4, suffix: "+", label: "Years Experience" },
-    { value: 100, suffix: "+", label: "Videos Edited" },
-    { value: 40, suffix: "+", label: "Happy Clients" },
+    { value: 4000, suffix: "+", label: "Videos Edited" },
+    { value: 50, suffix: "+", label: "Happy Clients" },
   ],
 
   contact: {
@@ -26,8 +26,8 @@ export const site = {
    * them. While empty, a labelled placeholder is rendered in their place.
    */
   images: {
-    /** Low-key portrait, rendered with the duotone multiply + feathered mask. */
-    heroPortrait: "/images/ali-hero-portrait.jpeg",
+    /** Background-removed cut-out, rendered as-is over the gradient. */
+    heroPortrait: "/images/ali-hero-portrait.png",
     /** 4:5 portrait for the About section, grayscale + gradient wash. */
     aboutPortrait: "/images/IMG_5728.JPG.jpeg",
   },

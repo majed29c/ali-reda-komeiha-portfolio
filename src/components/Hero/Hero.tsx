@@ -37,8 +37,10 @@ export default function Hero() {
           <div className={styles.eyebrow}>Hey, I&rsquo;m a</div>
           <h1 className={styles.title}>
             Video Editor
-            {/* Light weight against the bold line above: he edits, and he shoots. */}
-            <span className={styles.titleLight}>&amp; Filmmaker</span>
+            {/* Serif italic against the bold sans above: he edits, he shoots. */}
+            <span className={styles.titleLight}>
+              <span className={styles.amp}>&amp;</span> Filmmaker
+            </span>
           </h1>
           <div className={styles.sub}>
             Video editing, cinematic filmmaking &amp; visual storytelling.
@@ -50,8 +52,8 @@ export default function Hero() {
         <div className={styles.right}>
           <div className={styles.quote}>Great stories are made in the edit.</div>
           <div className={styles.rightCopy}>
-            I turn raw footage into engaging videos, ads, and content that keep
-            people watching
+            I turn raw footage into engaging videos, ads, &amp; content that
+            keep people watching
           </div>
           <a className={styles.reel} href="#work">
             View my Reel

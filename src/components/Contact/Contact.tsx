@@ -24,7 +24,7 @@ export default function Contact() {
       href: site.contact.instagram,
       Icon: Instagram,
       label: "Instagram",
-      sub: "Latest cuts and behind the scenes",
+      sub: "Latest cuts & behind the scenes",
       primary: false,
       external: true,
     },

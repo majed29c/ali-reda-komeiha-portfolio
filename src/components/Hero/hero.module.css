@@ -11,16 +11,13 @@
 
 /*
  * A pool of the gradient's own dark stops (#3f0d00 → #7d1e00), sat behind the
- * portrait. Without it the photo's black surround meets bright orange directly
- * and reads as a grey cloud pasted on top. Landing it in warm tones instead
- * makes the shadow look like part of the gradient's own falloff.
- *
- * Drifted down-left of centre, away from the gradient's light source at
- * 68% 18%, so it behaves like a cast shadow rather than a symmetric halo.
+ * portrait so the cut-out lands in warm shadow instead of floating on bright
+ * orange. Drifted down-left of the gradient's light source at 68% 18%, so it
+ * behaves like a cast shadow rather than a symmetric halo.
  *
  * Painted before .portrait in DOM order, so it sits under the photo, and both
- * sit under the copy — all of which are positioned, so paint order is source
- * order and no z-index is needed.
+ * sit under the copy — all positioned, so paint order is source order and no
+ * z-index is needed.
  */
 .hero::before {
   content: "";
@@ -36,12 +33,11 @@
 }
 
 /*
- * Portrait sits behind the copy as a duotone cut-out: desaturated, multiplied
- * into the gradient and feathered out with a radial mask.
- * `--portrait-aspect` should match the supplied photo.
+ * Portrait sits behind the copy, cropped to a circle whose outer third fades
+ * out, so the edge mixes into the gradient rather than stopping against it.
  */
 .portrait {
-  /* Intrinsic ratio of ali-hero-portrait.jpeg (1031x1280), so cover never crops. */
+  /* Intrinsic ratio of ali-hero-portrait.png (1031x1280), so cover never crops. */
   --portrait-aspect: 1031 / 1280;
 
   position: absolute;
@@ -50,37 +46,21 @@
   bottom: 0;
   height: 94%;
   aspect-ratio: var(--portrait-aspect);
-  /*
-   * The hand-off's duotone (`grayscale(1) contrast(1.45)` + `mix-blend-mode:
-   * multiply`) assumes a portrait shot on a LIGHT background — multiply drops
-   * white and darkens the subject. This photo is lit on black, so multiply
-   * crushed the whole frame into a shadow and buried his face. Blend removed;
-   * exposure lifted and saturation pulled back instead, which keeps the face
-   * legible while still reading as part of the orange hero.
-   */
+  /* Exposure lifted and saturation pulled back, so the face stays legible
+     against the orange without a blend mode. */
   filter: brightness(1.4) saturate(0.5);
   pointer-events: none;
-  /*
-   * Sized to carry head, neck and the top of the shirt, with a long fade so the
-   * photo's black background reads as a spread shadow rather than a hard oval.
-   *
-   * That background cannot be cut out: his hair, sunglasses and shirt are the
-   * same near-black, so a luminance key and an edge flood-fill both bleed
-   * through the hair into the face. Which is also why the shirt merges into the
-   * shadow — it genuinely is that dark. A background-removed PNG would let this
-   * mask be dropped entirely.
-   *
-   * Keep rx <= 50%, and cy - ry >= 0, so the feather completes before the image
-   * edge. Larger values get clipped and leave a hard rectangular cut.
-   */
+  /* `closest-side` on a taller-than-wide box gives a circle the width of the
+     image, centred on the face rather than the frame. Solid to 62%, then a
+     long fade — the blur that lets it sit in the gradient. */
   mask-image: radial-gradient(
-    ellipse 42% 46% at 50% 46%,
-    #000 55%,
+    circle closest-side at 50% 44%,
+    #000 62%,
     rgba(0, 0, 0, 0) 100%
   );
   -webkit-mask-image: radial-gradient(
-    ellipse 42% 46% at 50% 46%,
-    #000 55%,
+    circle closest-side at 50% 44%,
+    #000 62%,
     rgba(0, 0, 0, 0) 100%
   );
 }
@@ -136,13 +116,27 @@
 }
 
 /*
- * "Filmmaker" sits under "Video Editor" at the same size but unbolded — the
- * weight contrast says he edits and also shoots, without a second headline.
+ * A quieter second line under the headline: Inter at medium weight, well below
+ * the display size above, so it reads as a subtitle rather than competing with
+ * it. Its own line-height, since the headline's 0.96 is far too tight here.
  */
 .titleLight {
   display: block;
-  font-weight: 400;
-  letter-spacing: -0.02em;
+  /* "Plain Ampersand" first, as in the body stack — see globals.css. */
+  font-family: "Plain Ampersand", var(--font-inter), system-ui, sans-serif;
+  font-size: 0.5em;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  /* Keeps the ampersand from being stranded alone on a line. */
+  white-space: nowrap;
+  color: #fff;
+}
+
+/* Sits a touch smaller than the words either side of it, as ampersands do. */
+.amp {
+  font-size: 0.94em;
+  letter-spacing: 0;
 }
 
 .sub {

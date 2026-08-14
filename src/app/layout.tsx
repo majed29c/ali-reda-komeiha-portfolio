@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Archivo } from "next/font/google";
+import { Archivo, Inter } from "next/font/google";
 import "./globals.css";
 
 const archivo = Archivo({
@@ -7,14 +7,20 @@ const archivo = Archivo({
   subsets: ["latin"],
 });
 
+/** Carries the hero headline: ubiquitous, and drawn for screen legibility. */
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+});
+
 export const metadata: Metadata = {
-  title: "Ali Komeiha — Video Editor & Visual Storyteller",
+  title: "Ali Reda Km — Video Editor & Visual Storyteller",
   description:
-    "Video Editor specializing in talking-head, VSL, UGC, ads and cinematic edits — from basic cuts to advanced 3D and motion design.",
+    "Video Editor specializing in talking-head, VSL, UGC, ads & cinematic edits — from basic cuts to advanced 3D & motion design.",
   openGraph: {
-    title: "Ali Komeiha — Video Editor & Visual Storyteller",
+    title: "Ali Reda Km — Video Editor & Visual Storyteller",
     description:
-      "Talking-head, VSL, UGC, ads and cinematic edits — from basic cuts to advanced 3D and motion design.",
+      "Talking-head, VSL, UGC, ads & cinematic edits — from basic cuts to advanced 3D & motion design.",
     type: "website",
   },
 };
@@ -43,7 +49,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
      * `__gcrremoteframetoken` onto <html> before React hydrates, which we
      * cannot prevent. Mismatches inside the app still surface normally.
      */
-    <html lang="en" className={archivo.variable} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${archivo.variable} ${inter.variable}`}
+      suppressHydrationWarning
+    >
       <body>
         <script dangerouslySetInnerHTML={{ __html: RESET_SCROLL_ON_LOAD }} />
         {children}

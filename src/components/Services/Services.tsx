@@ -17,61 +17,61 @@ const services = [
     Icon: Person,
     title: "Talking Head Editing",
     description:
-      "Engaging talking-head content with captions, B-roll, sound design, animations and retention-focused pacing.",
+      "Engaging talking-head content with captions, B-roll, sound design, animations & retention-focused pacing.",
   },
   {
     Icon: Phone,
     title: "UGC Editing",
     description:
-      "Fast-paced UGC edits with strong hooks, captions, dynamic cuts and retention-focused editing.",
+      "Fast-paced UGC edits with strong hooks, captions, dynamic cuts & retention-focused editing.",
   },
   {
     Icon: Speaker,
     title: "Commercial Ad Editing",
     description:
-      "Product ads, promotional videos and social media campaigns designed to capture attention and drive results.",
+      "Product ads, promotional videos & social media campaigns designed to capture attention & drive results.",
   },
   {
     Icon: Monitor,
     title: "VSL Editing",
     description:
-      "Sales videos structured with strong hooks, pacing, storytelling and visual elements designed to drive action.",
+      "Sales videos structured with strong hooks, pacing, storytelling & visual elements designed to drive action.",
   },
   {
     Icon: Clapperboard,
     title: "Cinematic Video Editing",
     description:
-      "Cinematic storytelling, polished cuts, color grading and sound design with a strong visual style.",
+      "Cinematic storytelling, polished cuts, color grading & sound design with a strong visual style.",
   },
   {
     Icon: Motion,
     title: "Motion Graphics & Editing",
     description:
-      "Dynamic text animation, transitions, visual effects and motion design that enhance the story and keep viewers engaged.",
+      "Dynamic text animation, transitions, visual effects & motion design that enhance the story & keep viewers engaged.",
   },
   {
     Icon: Sparkle,
     title: "AI Video & Visuals",
     description:
-      "AI-generated scenes, visuals, creative effects and AI-enhanced content used to create unique and engaging videos.",
+      "AI-generated scenes, visuals, creative effects & AI-enhanced content used to create unique & engaging videos.",
   },
   {
     Icon: Cube,
     title: "3D Animation & Editing",
     description:
-      "3D sequences, animated assets, product visuals and advanced visual elements for ads and branded content.",
+      "3D sequences, animated assets, product visuals & advanced visual elements for ads & branded content.",
   },
   {
     Icon: Cut,
     title: "Basic Video Editing",
     description:
-      "Clean and efficient edits with cuts, sound, color correction, simple captions and smooth pacing.",
+      "Clean & efficient edits with cuts, sound, color correction, simple captions & smooth pacing.",
   },
   {
     Icon: VideoCamera,
     title: "Commercial & Cinematic Filming",
     description:
-      "Commercial ads, cinematic shots and branded visual content filmed with a professional camera and crafted for a polished final look.",
+      "Commercial ads, cinematic shots & branded visual content filmed with a professional camera & crafted for a polished final look.",
   },
 ];
 
