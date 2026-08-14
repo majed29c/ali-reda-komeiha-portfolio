@@ -7,7 +7,7 @@ export const site = {
   /** Counts up when the About section scrolls into view. */
   stats: [
     { value: 4, suffix: "+", label: "Years Experience" },
-    { value: 6000, suffix: "+", label: "Videos Edited" },
+    { value: 100, suffix: "+", label: "Videos Edited" },
     { value: 40, suffix: "+", label: "Happy Clients" },
   ],
 

@@ -90,15 +90,36 @@ export async function getProjects(): Promise<Project[]> {
     .filter((project) => project.title || project.fileId);
 }
 
+/*
+ * Numeric-aware and case-insensitive, so "2" sorts before "10" instead of after
+ * it, and "ugc" sits with "UGC". Digits sort ahead of letters, so numbered
+ * sections always lead.
+ */
+const collator = new Intl.Collator("en", { numeric: true, sensitivity: "base" });
+
 /**
- * Builds the Work carousels straight from column A: one section per distinct
- * Section value, in the order they first appear in the sheet.
+ * An ordering prefix: "1." / "2)" / "10 - ". Stripped from the heading so the
+ * sheet can control order without the number showing on the site.
  *
- * Matching ignores case so "UGC" and "ugc" land in the same carousel; the
- * spelling used the first time a section appears becomes its heading.
+ * The separator is required, which is what keeps "3D Animation" intact — there
+ * is no `.`, `)` or `-` after its 3.
+ */
+const ORDER_PREFIX = /^\s*\d+\s*[.)\-–]\s*/;
+
+/**
+ * Builds the Work carousels from column A: one section per distinct Section
+ * value, sorted numerically then alphabetically.
+ *
+ * To force a specific order, prefix the section in the sheet — "1. Video
+ * Editing", "2. UGC & Ads". The prefix drives the sort and is hidden in the
+ * heading. Sections without a prefix fall alphabetically after the numbered
+ * ones.
+ *
+ * Grouping ignores case; the spelling used the first time a section appears
+ * becomes its heading.
  */
 export function groupBySection(projects: Project[]): ProjectSection[] {
-  const grouped = new Map<string, ProjectSection>();
+  const grouped = new Map<string, ProjectSection & { sortKey: string }>();
 
   for (const project of projects) {
     const key = project.section.toLowerCase();
@@ -106,9 +127,18 @@ export function groupBySection(projects: Project[]): ProjectSection[] {
     if (existing) {
       existing.projects.push(project);
     } else {
-      grouped.set(key, { name: project.section, projects: [project] });
+      grouped.set(key, {
+        name: project.section.replace(ORDER_PREFIX, "").trim() || project.section,
+        sortKey: project.section,
+        projects: [project],
+      });
     }
   }
 
-  return [...grouped.values()];
+  return [...grouped.values()]
+    .sort((a, b) => collator.compare(a.sortKey, b.sortKey))
+    .map(({ name, projects: sectionProjects }) => ({
+      name,
+      projects: sectionProjects,
+    }));
 }

@@ -70,7 +70,12 @@ Sheet layout — tab `Sheet1`, headers in row 1, data from row 2:
 | --------- | ------- | ------------- | ----------- |
 | Branding  | Nike Rebrand | A bold identity refresh… | https://drive.google.com/file/d/FILE_ID/view?usp=sharing |
 
-- One carousel per `Section`, in the order the sections first appear in the sheet.
+- One carousel per `Section`, sorted numerically then alphabetically.
+- **To control the order**, prefix the section: `1. Video Editing`, `2. UGC & Ads`.
+  The prefix drives the sort and is stripped from the heading, so it never shows on the
+  site. `1.`, `2)` and `10 -` all work. Sorting is numeric-aware, so `2` comes before
+  `10`. Sections without a prefix fall alphabetically after the numbered ones.
+  `3D Animation` is safe — a separator is required, and it has none after the `3`.
 - A blank `Section` falls back to `"Other"`.
 - `fileId` is pulled from the Drive link with `/\/d\/([^/]+)/`; a missing or malformed
   link leaves it `null` and the card shows "Video unavailable".
