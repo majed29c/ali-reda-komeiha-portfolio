@@ -25,13 +25,14 @@
   --hero-sub-label: #ffc9a3;
   --available: #4ade80;
 
+  /* Centred light source, so the portrait multiplied into it stays symmetric. */
   --hero-gradient: radial-gradient(
-    120% 140% at 68% 18%,
-    #ffa04d 0%,
-    #ff6a24 32%,
-    #d43c05 55%,
+    120% 140% at 50% 10%,
+    #ff8a3d 0%,
+    #ef5f18 30%,
+    #c23a04 55%,
     #7d1e00 80%,
-    #3f0d00 100%
+    #3a0c00 100%
   );
 
   /* Layout */

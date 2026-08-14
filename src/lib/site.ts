@@ -26,8 +26,12 @@ export const site = {
    * them. While empty, a labelled placeholder is rendered in their place.
    */
   images: {
-    /** Background-removed cut-out, rendered as-is over the gradient. */
-    heroPortrait: "/images/ali-hero-portrait.png",
+    /**
+     * Seated full-body shot on a white studio backdrop. The white is dropped by
+     * `mix-blend-mode: multiply` in the hero, so this file must keep its light
+     * background — a cut-out PNG would blend to nothing.
+     */
+    heroPortrait: "/images/ali2-.jpg",
     /** 4:5 portrait for the About section, grayscale + gradient wash. */
     aboutPortrait: "/images/IMG_5728.JPG.jpeg",
   },

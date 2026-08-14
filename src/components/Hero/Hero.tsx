@@ -13,24 +13,27 @@ const specialities = [
 export default function Hero() {
   return (
     <section className={styles.hero}>
-      <div className={styles.portrait}>
-        {site.images.heroPortrait ? (
-          <Image
-            className={styles.portraitImage}
-            src={site.images.heroPortrait}
-            alt={`Portrait of ${site.name}`}
-            fill
-            sizes="(max-width: 900px) 60vw, 30vw"
-            priority
-          />
-        ) : (
-          <div className={styles.portraitPlaceholder}>
-            Hero portrait
-            <br />
-            public/images/
-          </div>
-        )}
-      </div>
+      {site.images.heroPortrait ? (
+        <Image
+          className={styles.portraitImage}
+          src={site.images.heroPortrait}
+          alt={`Portrait of ${site.name}`}
+          /* Intrinsic size of ali2-.jpg; CSS drives the rendered height. */
+          width={896}
+          height={1195}
+          sizes="(max-width: 900px) 80vw, 40vw"
+          priority
+        />
+      ) : (
+        <div className={styles.portraitPlaceholder}>
+          Hero portrait
+          <br />
+          public/images/
+        </div>
+      )}
+
+      {/* Sits between the photo and the copy — see .scrim. */}
+      <div className={styles.scrim} aria-hidden="true" />
 
       <div className={styles.top}>
         <div className={styles.left}>
