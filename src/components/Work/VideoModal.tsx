@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Close } from "@/components/icons";
+import { useScrollLock } from "@/lib/useScrollLock";
 import styles from "./videoModal.module.css";
 
 const FOCUSABLE =
@@ -28,10 +29,11 @@ export default function VideoModal({
   /** Plays the exit animation first; onClose fires when it finishes. */
   const requestClose = useCallback(() => setClosing(true), []);
 
+  // Mounted only while open, so the lock is unconditional here.
+  useScrollLock(true);
+
   useEffect(() => {
     const { body } = document;
-    const previousOverflow = body.style.overflow;
-    body.style.overflow = "hidden";
     // Read by LiveRefresh, which skips its poll while a video is playing so a
     // background refresh cannot remount the player mid-watch.
     body.dataset.modalOpen = "true";
@@ -61,7 +63,6 @@ export default function VideoModal({
 
     document.addEventListener("keydown", onKeyDown);
     return () => {
-      body.style.overflow = previousOverflow;
       delete body.dataset.modalOpen;
       document.removeEventListener("keydown", onKeyDown);
     };

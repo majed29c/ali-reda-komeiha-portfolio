@@ -10,12 +10,39 @@
 }
 
 /*
+ * A pool of the gradient's own dark stops (#3f0d00 → #7d1e00), sat behind the
+ * portrait. Without it the photo's black surround meets bright orange directly
+ * and reads as a grey cloud pasted on top. Landing it in warm tones instead
+ * makes the shadow look like part of the gradient's own falloff.
+ *
+ * Drifted down-left of centre, away from the gradient's light source at
+ * 68% 18%, so it behaves like a cast shadow rather than a symmetric halo.
+ *
+ * Painted before .portrait in DOM order, so it sits under the photo, and both
+ * sit under the copy — all of which are positioned, so paint order is source
+ * order and no z-index is needed.
+ */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 44% 80% at 46.5% 53%,
+    rgba(63, 13, 0, 0.9) 0%,
+    rgba(92, 21, 0, 0.45) 45%,
+    rgba(125, 30, 0, 0) 100%
+  );
+}
+
+/*
  * Portrait sits behind the copy as a duotone cut-out: desaturated, multiplied
  * into the gradient and feathered out with a radial mask.
  * `--portrait-aspect` should match the supplied photo.
  */
 .portrait {
-  --portrait-aspect: 3 / 4;
+  /* Intrinsic ratio of ali-hero-portrait.jpeg (1031x1280), so cover never crops. */
+  --portrait-aspect: 1031 / 1280;
 
   position: absolute;
   left: 50%;
@@ -23,17 +50,37 @@
   bottom: 0;
   height: 94%;
   aspect-ratio: var(--portrait-aspect);
-  filter: grayscale(1) contrast(1.45) brightness(1.06);
-  mix-blend-mode: multiply;
+  /*
+   * The hand-off's duotone (`grayscale(1) contrast(1.45)` + `mix-blend-mode:
+   * multiply`) assumes a portrait shot on a LIGHT background — multiply drops
+   * white and darkens the subject. This photo is lit on black, so multiply
+   * crushed the whole frame into a shadow and buried his face. Blend removed;
+   * exposure lifted and saturation pulled back instead, which keeps the face
+   * legible while still reading as part of the orange hero.
+   */
+  filter: brightness(1.4) saturate(0.5);
   pointer-events: none;
+  /*
+   * Sized to carry head, neck and the top of the shirt, with a long fade so the
+   * photo's black background reads as a spread shadow rather than a hard oval.
+   *
+   * That background cannot be cut out: his hair, sunglasses and shirt are the
+   * same near-black, so a luminance key and an edge flood-fill both bleed
+   * through the hair into the face. Which is also why the shirt merges into the
+   * shadow — it genuinely is that dark. A background-removed PNG would let this
+   * mask be dropped entirely.
+   *
+   * Keep rx <= 50%, and cy - ry >= 0, so the feather completes before the image
+   * edge. Larger values get clipped and leave a hard rectangular cut.
+   */
   mask-image: radial-gradient(
-    ellipse 58% 74% at 50% 44%,
-    #000 58%,
+    ellipse 42% 46% at 50% 46%,
+    #000 55%,
     rgba(0, 0, 0, 0) 100%
   );
   -webkit-mask-image: radial-gradient(
-    ellipse 58% 74% at 50% 44%,
-    #000 58%,
+    ellipse 42% 46% at 50% 46%,
+    #000 55%,
     rgba(0, 0, 0, 0) 100%
   );
 }
@@ -86,6 +133,16 @@
   font-weight: 800;
   letter-spacing: -0.03em;
   color: #fff;
+}
+
+/*
+ * "Filmmaker" sits under "Video Editor" at the same size but unbolded — the
+ * weight contrast says he edits and also shoots, without a second headline.
+ */
+.titleLight {
+  display: block;
+  font-weight: 400;
+  letter-spacing: -0.02em;
 }
 
 .sub {
@@ -153,7 +210,7 @@
 .strip {
   position: relative;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 24px;
   padding: 32px 56px 40px;
 }
@@ -175,6 +232,16 @@
 @media (max-width: 900px) {
   .hero {
     min-height: 0;
+  }
+
+  /* Stacked layout puts the portrait near the top, so the pool follows it. */
+  .hero::before {
+    background: radial-gradient(
+      ellipse 62% 34% at 50% 22%,
+      rgba(63, 13, 0, 0.85) 0%,
+      rgba(92, 21, 0, 0.4) 45%,
+      rgba(125, 30, 0, 0) 100%
+    );
   }
 
   .portrait {
@@ -207,8 +274,9 @@
   }
 
   .strip {
+    grid-template-columns: repeat(3, 1fr);
     padding: 36px clamp(20px, 5vw, 40px) 36px;
-    gap: 20px;
+    gap: 20px 16px;
   }
 }
 

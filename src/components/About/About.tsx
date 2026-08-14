@@ -1,23 +1,29 @@
 import Image from "next/image";
-import { ChevronRight, Convert, Cube, Montage } from "@/components/icons";
+import Stats from "./Stats";
+import { ChevronRight, Clapperboard, Cube, Cut, Phone } from "@/components/icons";
 import { site } from "@/lib/site";
 import styles from "./about.module.css";
 
 const highlights = [
   {
-    Icon: Montage,
-    title: "Montage & cinematic edits",
-    sub: "Paced, graded, finished.",
+    Icon: Cut,
+    title: "Video Editing",
+    sub: "Talking-head, VSL & social media content.",
   },
   {
-    Icon: Convert,
-    title: "UGC, ads & VSL",
-    sub: "Built to convert.",
+    Icon: Clapperboard,
+    title: "Cinematic Filmmaking",
+    sub: "Cinematic storytelling, commercials & product films.",
+  },
+  {
+    Icon: Phone,
+    title: "UGC & Ads",
+    sub: "UGC content, performance ads & branded content.",
   },
   {
     Icon: Cube,
-    title: "3D animation & advanced edits",
-    sub: "VFX and compositing.",
+    title: "3D Animation",
+    sub: "3D animation, motion design & advanced edits.",
   },
 ];
 
@@ -25,36 +31,38 @@ export default function About() {
   return (
     <section id="about" className={styles.about}>
       <div className={styles.photoColumn}>
-        <div className={styles.frame}>
-          {site.images.aboutPortrait ? (
-            <Image
-              className={styles.photo}
-              src={site.images.aboutPortrait}
-              alt={`${site.name} at work`}
-              fill
-              sizes="(max-width: 780px) 90vw, 440px"
-            />
-          ) : (
-            <div className={styles.photoPlaceholder}>
-              About portrait (4:5)
-              <br />
-              public/images/
-            </div>
-          )}
+        <div className={styles.photoWrap}>
+          <div className={styles.frame}>
+            {site.images.aboutPortrait ? (
+              <Image
+                className={styles.photo}
+                src={site.images.aboutPortrait}
+                alt={`${site.name} at work`}
+                fill
+                sizes="(max-width: 780px) 90vw, 440px"
+              />
+            ) : (
+              <div className={styles.photoPlaceholder}>
+                About portrait (4:5)
+                <br />
+                public/images/
+              </div>
+            )}
+          </div>
+          <div className={styles.wash} />
         </div>
-        <div className={styles.wash} />
-        <div className={styles.badge}>
-          <div className={styles.badgeValue}>+4 years</div>
-          <div className={styles.badgeLabel}>of experience</div>
-        </div>
+        <Stats />
       </div>
 
       <div className={styles.copy}>
         <div className={styles.eyebrow}>About Me</div>
-        <h2 className={styles.heading}>I cut video that holds attention.</h2>
+        <h2 className={styles.heading}>
+          I edit videos that keep people{" "}
+          <span className={styles.accentWord}>watching</span>
+        </h2>
         <p className={styles.intro}>
-          Video editor and filmmaker. Montage, cinematic shots, talking-head, VSL and
-          UGC — from a basic cut to 3D and advanced edits.
+          Video Editor specializing in talking-head, VSL, UGC, ads and cinematic
+          edits — from basic cuts to advanced 3D and motion design.
         </p>
 
         {highlights.map(({ Icon, title, sub }) => (

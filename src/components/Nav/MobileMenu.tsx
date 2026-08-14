@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import { ChevronRight, Close, Menu } from "@/components/icons";
+import { useScrollLock } from "@/lib/useScrollLock";
 import { site } from "@/lib/site";
 import styles from "./mobileMenu.module.css";
 
@@ -15,14 +16,25 @@ export default function MobileMenu({ links }: { links: NavLink[] }) {
   const panelId = useId();
   const burgerRef = useRef<HTMLButtonElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
 
-  // While open: lock the page behind the drawer, move focus into it, close on Escape.
+  useScrollLock(open);
+
+  /*
+   * `inert` is set here rather than in JSX. It is one of the attributes React
+   * serialises on the server but compares as a DOM *property* on the client,
+   * which trips the "server rendered HTML didn't match the client properties"
+   * hydration warning. Applying it after mount keeps it out of hydration.
+   */
+  useEffect(() => {
+    const panel = panelRef.current;
+    if (panel) panel.inert = !open;
+  }, [open]);
+
+  // While open: move focus into the drawer and close on Escape.
   useEffect(() => {
     if (!open) return;
 
-    const { body } = document;
-    const previousOverflow = body.style.overflow;
-    body.style.overflow = "hidden";
     closeRef.current?.focus();
 
     const onKeyDown = (event: KeyboardEvent) => {
@@ -30,10 +42,7 @@ export default function MobileMenu({ links }: { links: NavLink[] }) {
     };
     document.addEventListener("keydown", onKeyDown);
 
-    return () => {
-      body.style.overflow = previousOverflow;
-      document.removeEventListener("keydown", onKeyDown);
-    };
+    return () => document.removeEventListener("keydown", onKeyDown);
   }, [open]);
 
   // Growing past the breakpoint brings the inline nav back, so drop the drawer.
@@ -72,9 +81,9 @@ export default function MobileMenu({ links }: { links: NavLink[] }) {
       />
 
       <div
+        ref={panelRef}
         id={panelId}
         className={`${styles.panel} ${open ? styles.panelOpen : ""}`}
-        inert={!open}
       >
         <div className={styles.panelHeader}>
           <div className={styles.wordmark}>

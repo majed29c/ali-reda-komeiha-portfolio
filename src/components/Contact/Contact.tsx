@@ -35,7 +35,7 @@ export default function Contact() {
       <div className={styles.panel}>
         <div>
           <div className={styles.eyebrow}>Get In Touch</div>
-          <h3 className={styles.heading}>Let&rsquo;s create something great.</h3>
+          <h3 className={styles.heading}>Let&rsquo;s cook something great</h3>
           <p className={styles.copy}>
             Have a project in mind? A brand ad, a short-form reel, or a full cinematic
             piece — I&rsquo;m one message away.
@@ -58,7 +58,7 @@ export default function Contact() {
                 <span className={styles.actionIcon}>
                   <Icon size={22} />
                 </span>
-                <span>
+                <span className={styles.actionText}>
                   <span className={styles.actionLabel}>{label}</span>
                   <span className={styles.actionSub}>{sub}</span>
                 </span>

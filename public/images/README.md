@@ -2,10 +2,10 @@
 
 Paths are wired up in `src/lib/site.ts` under `images`.
 
-| Slot            | File                     | Status                                    |
-| --------------- | ------------------------ | ----------------------------------------- |
-| About portrait  | `IMG_5728.JPG.jpeg`      | In use. Rendered in a 4:5 frame with `grayscale(1) contrast(1.08)` and the orange→dark wash, per the hand-off. |
-| Hero portrait   | —                        | Still empty; a labelled placeholder shows in its slot. |
+| Slot            | File                      | Status                                   |
+| --------------- | ------------------------- | ---------------------------------------- |
+| Hero portrait   | `ali-hero-portrait.jpeg`  | In use. `brightness(1.5) saturate(0.45)` behind a feathered radial mask. No blend mode — see below. |
+| About portrait  | `IMG_5728.JPG.jpeg`       | In use. 4:5 frame with `grayscale(1) contrast(1.08)` and the orange→dark wash, per the hand-off. |
 
 ## About portrait
 
@@ -15,13 +15,20 @@ top and bottom. If a different photo is dropped in and the crop cuts badly, set
 
 ## Hero portrait
 
-Add the B/W cut-out as `hero-portrait.png` (transparent or dark background works best)
-and set:
+The hand-off's duotone assumed a portrait shot on a **light** background. This photo is
+lit on black, so the specified treatment does not work. What was tried:
 
-```ts
-heroPortrait: "/images/hero-portrait.png",
-```
+| Approach | Result |
+| -------- | ------ |
+| `mix-blend-mode: multiply` (hand-off) | Black background multiplies to black — the frame becomes a shadow and the face is barely readable. |
+| `mix-blend-mode: screen` | Drops the black cleanly, but leaves a washed-out floating face with no hair. |
+| Automated luminance cutout | Fails: his hair and black shirt are the same value as the background, so they get keyed out too. |
+| Edge flood-fill cutout | Fails worse — removes 83–91% of the frame, bleeding through the hair into the face. |
+| **No blend + lifted exposure + feathered mask** | **In use.** Face is clear, background dissolves into a soft halo. |
 
-It is rendered with the duotone treatment — `grayscale(1) contrast(1.45) brightness(1.06)`,
-`mix-blend-mode: multiply` and a radial feather mask. If the photo is not roughly 3:4,
-adjust `--portrait-aspect` in `src/components/Hero/hero.module.css` to match.
+**A properly background-removed PNG would still be better** — ask Ali for one (remove.bg
+or Photoshop), drop it in, and the mask can then be widened to show his shoulders.
+
+Swapping the photo means updating `--portrait-aspect` in
+`src/components/Hero/hero.module.css` to the new file's intrinsic ratio. Keep the mask
+radii at or under 50%, or the feather is clipped and the photo ends in a hard edge.

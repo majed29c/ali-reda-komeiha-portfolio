@@ -6,6 +6,7 @@ import Hero from "@/components/Hero";
 import LiveRefresh from "@/components/LiveRefresh";
 import Nav from "@/components/Nav";
 import Offline from "@/components/Offline";
+import ScrollReset from "@/components/ScrollReset";
 import Services from "@/components/Services";
 import Work from "@/components/Work";
 import { getProjects, groupBySection } from "@/lib/getProjects";
@@ -46,6 +47,8 @@ export default async function Home() {
   return (
     <div className={styles.shell}>
       <div id="top" className={styles.inner}>
+        {/* Always open at the top, never a restored scroll offset. */}
+        <ScrollReset />
         {/* Picks up sheet edits in tabs that are already open. */}
         <LiveRefresh />
         <Nav />

@@ -1,67 +1,77 @@
 import {
-  Camera,
   Clapperboard,
   Cube,
   Cut,
   Monitor,
-  Montage,
+  Motion,
   Person,
   Phone,
   Sparkle,
   Speaker,
+  VideoCamera,
 } from "@/components/icons";
 import styles from "./services.module.css";
 
 const services = [
   {
-    Icon: Montage,
-    title: "Montage Editing",
-    description: "Rhythm-led montages that cut footage down to its strongest moments.",
-  },
-  {
-    Icon: Clapperboard,
-    title: "Cinematic Shots",
-    description: "Filmed and edited sequences with deliberate pacing and grade.",
-  },
-  {
-    Icon: Camera,
-    title: "Photography",
-    description: "Stills shot and retouched to sit alongside the video work.",
-  },
-  {
     Icon: Person,
-    title: "Talking-Head Edits",
-    description: "Interviews and to-camera content paced, cleaned and captioned.",
+    title: "Talking Head Editing",
+    description:
+      "Engaging talking-head content with captions, B-roll, sound design, animations and retention-focused pacing.",
+  },
+  {
+    Icon: Phone,
+    title: "UGC Editing",
+    description:
+      "Fast-paced UGC edits with strong hooks, captions, dynamic cuts and retention-focused editing.",
+  },
+  {
+    Icon: Speaker,
+    title: "Commercial Ad Editing",
+    description:
+      "Product ads, promotional videos and social media campaigns designed to capture attention and drive results.",
   },
   {
     Icon: Monitor,
     title: "VSL Editing",
-    description: "Sales videos structured to hold attention through the full pitch.",
+    description:
+      "Sales videos structured with strong hooks, pacing, storytelling and visual elements designed to drive action.",
   },
   {
-    Icon: Phone,
-    title: "UGC Content",
-    description: "Creator-style edits that feel native to the feed and convert.",
+    Icon: Clapperboard,
+    title: "Cinematic Video Editing",
+    description:
+      "Cinematic storytelling, polished cuts, color grading and sound design with a strong visual style.",
   },
   {
-    Icon: Cube,
-    title: "3D Animation",
-    description: "3D sequences and animated inserts for ads and brand content.",
+    Icon: Motion,
+    title: "Motion Graphics & Editing",
+    description:
+      "Dynamic text animation, transitions, visual effects and motion design that enhance the story and keep viewers engaged.",
   },
   {
     Icon: Sparkle,
-    title: "Advanced Edits",
-    description: "VFX, compositing and multi-layer work when the concept demands it.",
+    title: "AI Video & Visuals",
+    description:
+      "AI-generated scenes, visuals, creative effects and AI-enhanced content used to create unique and engaging videos.",
+  },
+  {
+    Icon: Cube,
+    title: "3D Animation & Editing",
+    description:
+      "3D sequences, animated assets, product visuals and advanced visual elements for ads and branded content.",
   },
   {
     Icon: Cut,
-    title: "Basic Edits",
-    description: "Fast, clean cuts with sound and colour handled — quick turnaround.",
+    title: "Basic Video Editing",
+    description:
+      "Clean and efficient edits with cuts, sound, color correction, simple captions and smooth pacing.",
   },
   {
-    Icon: Speaker,
-    title: "Ads & Promos",
-    description: "Promotional creatives built to stop the scroll and drive action.",
+    Icon: VideoCamera,
+    title: "Commercial & Cinematic Filming",
+    description:
+      "Commercial ads, cinematic shots and branded visual content filmed with a professional camera and crafted for a polished final look.",
   },
 ];
 

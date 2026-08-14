@@ -3,10 +3,11 @@ import { site } from "@/lib/site";
 import styles from "./hero.module.css";
 
 const specialities = [
-  "Montage Editing",
-  "Cinematic Shots",
+  "Video Editing",
+  "Cinematic Filmmaking",
   "UGC & Ads",
   "3D Animation",
+  "Motion Graphics",
 ];
 
 export default function Hero() {
@@ -36,10 +37,11 @@ export default function Hero() {
           <div className={styles.eyebrow}>Hey, I&rsquo;m a</div>
           <h1 className={styles.title}>
             Video Editor
-            <br />& Filmmaker
+            {/* Light weight against the bold line above: he edits, and he shoots. */}
+            <span className={styles.titleLight}>&amp; Filmmaker</span>
           </h1>
           <div className={styles.sub}>
-            Montage, cinematic shots and photography — edited end to end.
+            Video editing, cinematic filmmaking &amp; visual storytelling.
           </div>
         </div>
 
@@ -48,11 +50,11 @@ export default function Hero() {
         <div className={styles.right}>
           <div className={styles.quote}>Great stories are made in the edit.</div>
           <div className={styles.rightCopy}>
-            From raw footage to final cut, I shape films, ads and content that hold
-            attention.
+            I turn raw footage into engaging videos, ads, and content that keep
+            people watching
           </div>
           <a className={styles.reel} href="#work">
-            See the reel
+            View my Reel
             <span className={styles.reelBadge} aria-hidden="true">
               ▶
             </span>

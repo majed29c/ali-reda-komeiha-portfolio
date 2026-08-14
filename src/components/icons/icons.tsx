@@ -92,7 +92,8 @@ export function Close({ size = 18, strokeWidth = 2.2 }: IconProps) {
   );
 }
 
-export function Montage(props: IconProps) {
+/** Camcorder body + lens. Named for the glyph, not one particular service. */
+export function VideoCamera(props: IconProps) {
   return (
     <Svg {...props}>
       <path d="M4 6h9v12H4z" />
@@ -101,11 +102,13 @@ export function Montage(props: IconProps) {
   );
 }
 
-export function Convert(props: IconProps) {
+/** An animation curve between two keyframes. */
+export function Motion(props: IconProps) {
   return (
     <Svg {...props}>
-      <path d="M3 12a9 9 0 1 0 9-9" />
-      <path d="M12 12l5-3" />
+      <path d="M3.5 17.5c3.5-9 13.5 3.5 17-6" />
+      <circle cx="3.5" cy="17.5" r="1.7" />
+      <circle cx="20.5" cy="11.5" r="1.7" />
     </Svg>
   );
 }
@@ -124,16 +127,6 @@ export function Clapperboard(props: IconProps) {
     <Svg {...props}>
       <path d="M3 7h18v12H3z" />
       <path d="M7 7 5 3M12 7l-2-4M17 7l-2-4" />
-    </Svg>
-  );
-}
-
-export function Camera(props: IconProps) {
-  return (
-    <Svg {...props}>
-      <rect x="3" y="6" width="18" height="14" rx="3" />
-      <circle cx="12" cy="13" r="3.5" />
-      <path d="M8 6l1.2-2h5.6L16 6" />
     </Svg>
   );
 }

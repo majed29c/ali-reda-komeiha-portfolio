@@ -1,7 +1,8 @@
 .about {
   padding: clamp(72px, 9vw, 120px) 8px clamp(72px, 9vw, 110px);
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  /* min() keeps the track from holding a 280px floor on narrow phones. */
+  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
   gap: clamp(32px, 5vw, 72px);
   align-items: center;
 }
@@ -12,6 +13,11 @@
   max-width: 440px;
   justify-self: center;
   width: 100%;
+}
+
+/* Wraps only the photo, so the wash below cannot spill over the stats row. */
+.photoWrap {
+  position: relative;
 }
 
 .frame {
@@ -52,29 +58,12 @@
   pointer-events: none;
 }
 
-.badge {
-  position: absolute;
-  right: -10px;
-  bottom: -14px;
-  background: var(--accent);
-  color: #fff;
-  border-radius: 16px;
-  padding: 16px 20px;
-  box-shadow: 0 20px 40px -24px rgba(0, 0, 0, 0.9);
-}
-
-.badgeValue {
-  font-size: 26px;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  line-height: 1;
-}
-
-.badgeLabel {
-  font-size: 12px;
-  color: var(--on-accent-secondary-2);
-  margin-top: 3px;
-}
+/*
+ * The hand-off's "+4 years" badge overhung the photo at bottom:-14px. It was
+ * removed when the stats row landed: it said the same thing as "4+ Years
+ * Experience", and its overhang collided with the row directly beneath.
+ * To restore it, re-add the badge markup inside .photoWrap.
+ */
 
 .copy {
   min-width: 0;
@@ -93,6 +82,11 @@
   line-height: 1;
   font-weight: 800;
   letter-spacing: -0.03em;
+}
+
+/* Brand orange works here — the About section sits on the dark page ground. */
+.accentWord {
+  color: var(--accent);
 }
 
 .intro {
