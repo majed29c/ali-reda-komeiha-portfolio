@@ -70,7 +70,7 @@
    * opaque, so it shadowed the photo's rectangle rather than the man — a dark
    * band across his legs instead of a shadow beneath him.
    */
-  filter: brightness(1.32) contrast(1.12) saturate(0.68);
+  filter: brightness(1.42) contrast(1.16) saturate(0.68);
   pointer-events: none;
   /*
    * Feathered on the sides only. The photo runs from -2% to 104%, so the hero's
@@ -287,9 +287,31 @@
     );
   }
 
+  /*
+   * Stacked, the photo is height-limited and starts at the top, so all four of
+   * its edges fall inside the hero — the desktop side-only feather leaves the
+   * studio backdrop ending as a hard rectangle.
+   *
+   * One radial does the whole job, with no `mask-composite` to depend on. The
+   * geometry is deliberate: rx 50% and ry 65% centred at 35% put the zero-alpha
+   * edge of the ellipse exactly on the left, right and bottom edges of the
+   * frame, so all three fade to nothing, while the top edge falls inside the
+   * solid core and his head is untouched. Solid to 68% keeps his legs before
+   * the fade starts.
+   */
   .portraitImage {
     top: 0;
     height: var(--portrait-h);
+    mask-image: radial-gradient(
+      ellipse 50% 65% at 50% 35%,
+      #000 68%,
+      rgba(0, 0, 0, 0) 100%
+    );
+    -webkit-mask-image: radial-gradient(
+      ellipse 50% 65% at 50% 35%,
+      #000 68%,
+      rgba(0, 0, 0, 0) 100%
+    );
   }
 
   .top {
