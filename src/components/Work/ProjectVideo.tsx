@@ -42,7 +42,8 @@ export default function ProjectVideo({
 
   const close = () => {
     setOpen(false);
-    triggerRef.current?.focus();
+    // preventScroll: restoring focus must not jump the page to this card.
+    triggerRef.current?.focus({ preventScroll: true });
   };
 
   return (

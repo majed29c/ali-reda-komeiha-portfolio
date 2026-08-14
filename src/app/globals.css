@@ -89,10 +89,14 @@ svg {
   color: #fff;
 }
 
+/*
+ * No border-radius here: setting it would override each element's own corner
+ * radius while focused, so rounded cards and buttons visibly snap to square.
+ * The outline already follows the element's real radius on its own.
+ */
 :focus-visible {
   outline: 2px solid var(--accent);
-  outline-offset: 3px;
-  border-radius: 4px;
+  outline-offset: 2px;
 }
 
 @media (prefers-reduced-motion: reduce) {

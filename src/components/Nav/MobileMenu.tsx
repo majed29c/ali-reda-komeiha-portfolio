@@ -35,7 +35,7 @@ export default function MobileMenu({ links }: { links: NavLink[] }) {
   useEffect(() => {
     if (!open) return;
 
-    closeRef.current?.focus();
+    closeRef.current?.focus({ preventScroll: true });
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") setOpen(false);
@@ -57,7 +57,7 @@ export default function MobileMenu({ links }: { links: NavLink[] }) {
 
   const close = () => {
     setOpen(false);
-    burgerRef.current?.focus();
+    burgerRef.current?.focus({ preventScroll: true });
   };
 
   return (

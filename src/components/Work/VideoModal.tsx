@@ -9,6 +9,22 @@ import styles from "./videoModal.module.css";
 const FOCUSABLE =
   'button, [href], iframe, input, select, textarea, [tabindex]:not([tabindex="-1"])';
 
+/*
+ * Off by default, and it has to be.
+ *
+ * The native <video> path streams through /api/video/[fileId], which reads the
+ * bytes from Drive with an API key. Drive serves *metadata* to an API key fine,
+ * but refuses the media itself with an "automated queries" abuse page — every
+ * request, not intermittently. So the player would always fail and fall back,
+ * which just makes playback slow and unpredictable.
+ *
+ * Turning this on needs auth Drive accepts for media: a service account (share
+ * the folder with its email and send a Bearer token from the route) or OAuth.
+ * With that in place, set NEXT_PUBLIC_DRIVE_NATIVE_PLAYER=true.
+ */
+const NATIVE_PLAYER_ENABLED =
+  process.env.NEXT_PUBLIC_DRIVE_NATIVE_PLAYER === "true";
+
 export default function VideoModal({
   fileId,
   title,
@@ -22,8 +38,9 @@ export default function VideoModal({
 }) {
   const [loaded, setLoaded] = useState(false);
   const [closing, setClosing] = useState(false);
+  /** Drive's player is the default; the native one is opt-in and falls back here. */
+  const [useIframe, setUseIframe] = useState(!NATIVE_PLAYER_ENABLED);
   const panelRef = useRef<HTMLDivElement>(null);
-  const closeRef = useRef<HTMLButtonElement>(null);
   const titleId = useId();
 
   /** Plays the exit animation first; onClose fires when it finishes. */
@@ -37,7 +54,12 @@ export default function VideoModal({
     // Read by LiveRefresh, which skips its poll while a video is playing so a
     // background refresh cannot remount the player mid-watch.
     body.dataset.modalOpen = "true";
-    closeRef.current?.focus();
+    // Focus the dialog itself, not the close button — focusing a button paints
+    // an orange ring on it the moment the modal opens, which reads as a defect.
+    //
+    // preventScroll matters: without it the browser scrolls the newly focused
+    // element into view, which yanks the page to the top as the modal opens.
+    panelRef.current?.focus({ preventScroll: true });
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -83,6 +105,7 @@ export default function VideoModal({
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
+        tabIndex={-1}
         onClick={(event) => event.stopPropagation()}
       >
         <div className={styles.header}>
@@ -99,7 +122,6 @@ export default function VideoModal({
             ) : null}
           </div>
           <button
-            ref={closeRef}
             type="button"
             className={styles.close}
             onClick={requestClose}
@@ -116,17 +138,42 @@ export default function VideoModal({
               Loading video
             </div>
           )}
-          <iframe
-            className={styles.iframe}
-            data-loaded={loaded}
-            src={`https://drive.google.com/file/d/${fileId}/preview`}
-            title={title}
-            allow="autoplay; fullscreen; encrypted-media"
-            allowFullScreen
-            onLoad={() => setLoaded(true)}
-          />
-          {/* Covers Drive's pop-out button and absorbs clicks on it. */}
-          <span className={styles.cornerMask} aria-hidden="true" />
+
+          {useIframe ? (
+            <>
+              <iframe
+                className={styles.iframe}
+                data-loaded={loaded}
+                src={`https://drive.google.com/file/d/${fileId}/preview`}
+                title={title}
+                allow="autoplay; fullscreen; encrypted-media"
+                allowFullScreen
+                onLoad={() => setLoaded(true)}
+              />
+              {/* Only the iframe needs this — it covers Drive's own top chrome. */}
+              <span className={styles.topMask} aria-hidden="true" />
+            </>
+          ) : (
+            /* Native player: controls are the browser's, so they scale properly
+               and carry none of Drive's chrome. */
+            <video
+              className={styles.video}
+              data-loaded={loaded}
+              src={`/api/video/${fileId}`}
+              poster={`https://drive.google.com/thumbnail?id=${fileId}&sz=w1280`}
+              controls
+              autoPlay
+              playsInline
+              preload="metadata"
+              onLoadedMetadata={() => setLoaded(true)}
+              // If the proxy cannot serve the file (e.g. the API key is not yet
+              // allowed to call Drive), fall back to Drive's own player.
+              onError={() => {
+                setUseIframe(true);
+                setLoaded(false);
+              }}
+            />
+          )}
         </div>
 
         <p className={styles.hint}>Press Esc or click outside to close</p>

@@ -50,6 +50,11 @@
   animation: panelIn 0.48s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+/* Focus lands here when the dialog opens; the panel itself needs no ring. */
+.panel:focus {
+  outline: none;
+}
+
 .closing .panel {
   animation: panelOut 0.22s cubic-bezier(0.4, 0, 1, 1) forwards;
 }
@@ -183,6 +188,23 @@
   border: 1px solid var(--border);
 }
 
+/* Native player. object-fit: contain letterboxes rather than crops, so vertical
+   and landscape clips both sit correctly in the stage. */
+.video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #000;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.video[data-loaded="true"] {
+  opacity: 1;
+}
+
 /* Absolute, not a grid item — an iframe's 300px intrinsic width would otherwise
    size the auto track and leave the player narrower than the stage. */
 .iframe {
@@ -200,23 +222,26 @@
 }
 
 /*
- * Drive renders a "pop-out to new tab" button in the player's top-right corner.
- * The iframe is cross-origin, so it cannot be removed — this masks it and, more
- * importantly, swallows the click so the video can never escape the modal.
- * A soft radial edge reads as a corner vignette rather than a pasted-on square
- * when the video fills the stage; on letterboxed clips it is invisible.
+ * Drive renders a pop-out button, and on small screens a whole strip of chrome,
+ * across the top of the player. The iframe is cross-origin so none of it can be
+ * removed — this covers the full width of that strip and swallows taps on it, so
+ * the video can never escape the modal.
+ *
+ * A corner-only mask was not enough: the mobile player puts icons further left
+ * than the desktop one. The gradient tail keeps it reading as a vignette rather
+ * than a black bar when the video fills the stage.
  */
-.cornerMask {
+.topMask {
   position: absolute;
   top: 0;
+  left: 0;
   right: 0;
   z-index: 2;
-  width: 96px;
-  height: 78px;
-  background: radial-gradient(
-    125% 125% at 100% 0%,
+  height: 66px;
+  background: linear-gradient(
+    180deg,
     #000 0%,
-    #000 54%,
+    #000 52%,
     rgba(0, 0, 0, 0) 100%
   );
 }
@@ -257,13 +282,72 @@
   text-align: center;
 }
 
+/*
+ * A 16:9 stage on a phone is only ~190px tall, which squashes Drive's player
+ * chrome — the scrubber and skip buttons end up overlapping the picture. Give
+ * the stage real height instead and let the player letterbox inside it, which
+ * also suits the vertical clips that make up most of the reel.
+ */
+@media (max-width: 700px) {
+  .stage {
+    aspect-ratio: auto;
+    height: min(58vh, 460px);
+  }
+}
+
+/*
+ * Full-screen sheet on phones. Boxing the player into a small rounded card left
+ * Drive's chrome too narrow to lay out properly — controls crowded the picture
+ * and the frame sat off-centre. Giving it the whole screen fixes both, and is
+ * what a video overlay is expected to do on mobile anyway.
+ */
 @media (max-width: 560px) {
+  .backdrop {
+    padding: 0;
+  }
+
   .panel {
-    gap: 16px;
-    border-radius: 20px;
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    gap: 12px;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    overflow: hidden;
+    padding: 14px 14px calc(14px + env(safe-area-inset-bottom, 0px));
   }
 
   .header {
     gap: 12px;
+  }
+
+  .eyebrow {
+    margin-bottom: 6px;
+  }
+
+  .description {
+    /* Keep the header compact so the player gets the room. */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Take whatever height the header leaves, rather than a fixed ratio. */
+  .stage {
+    flex: 1;
+    min-height: 0;
+    height: auto;
+    aspect-ratio: auto;
+    border-radius: 12px;
+  }
+
+  .topMask {
+    height: 56px;
+  }
+
+  .hint {
+    display: none;
   }
 }

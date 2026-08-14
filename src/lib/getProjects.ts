@@ -43,6 +43,8 @@ export async function getProjects(): Promise<Project[]> {
   const sheetId = process.env.SHEET_ID;
   const apiKey = process.env.SHEETS_API_KEY;
 
+  // Missing config returns empty rather than throwing, so a fresh clone without
+  // an .env still builds and renders. Only *runtime* failures throw (see below).
   if (!sheetId || !apiKey) {
     console.warn("SHEET_ID or SHEETS_API_KEY is missing — no projects loaded.");
     return [];
@@ -52,34 +54,40 @@ export async function getProjects(): Promise<Project[]> {
     `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}` +
     `/values/${encodeURIComponent(RANGE)}?key=${apiKey}`;
 
-  try {
-    // Tagged so the Apps Script webhook (/api/revalidate) can invalidate this on
-    // demand the moment the sheet is edited. The 60s window is the fallback for
-    // when the webhook does not arrive.
-    const res = await fetch(url, {
-      next: { revalidate: 60, tags: [PROJECTS_TAG] },
-    });
+  // Tagged so the Apps Script webhook (/api/revalidate) can invalidate this on
+  // demand the moment the sheet is edited. The 60s window is the fallback for
+  // when the webhook does not arrive.
+  const res = await fetch(url, {
+    next: { revalidate: 60, tags: [PROJECTS_TAG] },
+  });
 
-    if (!res.ok) {
-      // 403 almost always means the Sheet is not shared publicly.
-      console.warn(`Sheets API responded ${res.status} — no projects loaded.`);
-      return [];
-    }
-
-    const data = (await res.json()) as { values?: string[][] };
-
-    return (data.values ?? [])
-      .map((row) => ({
-        section: (row[0] ?? "").trim() || "Other",
-        title: (row[1] ?? "").trim(),
-        description: (row[2] ?? "").trim(),
-        fileId: driveFileId((row[3] ?? "").trim()),
-      }))
-      .filter((project) => project.title || project.fileId);
-  } catch (error) {
-    console.warn("Sheets API request failed — no projects loaded.", error);
-    return [];
+  /*
+   * Failures throw rather than returning [] — deliberately.
+   *
+   * This runs during ISR regeneration. If it throws, Next keeps serving the last
+   * successfully rendered page and retries on the next pass, so a transient
+   * Google hiccup is invisible to visitors. Returning [] instead would render an
+   * empty Work section *successfully*, and that emptiness would then be cached
+   * for the whole revalidate window.
+   *
+   * A 403 here almost always means the Sheet is not shared publicly.
+   */
+  if (!res.ok) {
+    throw new Error(`Sheets API responded ${res.status}`);
   }
+
+  const data = (await res.json()) as { values?: string[][] };
+
+  // No rows is a real answer, not a failure: an empty sheet should render the
+  // empty state rather than hold the previous contents forever.
+  return (data.values ?? [])
+    .map((row) => ({
+      section: (row[0] ?? "").trim() || "Other",
+      title: (row[1] ?? "").trim(),
+      description: (row[2] ?? "").trim(),
+      fileId: driveFileId((row[3] ?? "").trim()),
+    }))
+    .filter((project) => project.title || project.fileId);
 }
 
 /**

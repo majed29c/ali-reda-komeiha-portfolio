@@ -50,7 +50,19 @@ export function useScrollLock(active: boolean) {
       body.style.width = "";
       body.style.overflow = "";
       body.style.paddingRight = "";
-      window.scrollTo(0, savedScrollY);
+
+      // Reading a layout value forces the document to regain its full scroll
+      // height first; otherwise the restore below can clamp to a shorter page.
+      void document.documentElement.scrollHeight;
+
+      /*
+       * behavior: "instant" is essential. globals.css sets
+       * `html { scroll-behavior: smooth }`, so a plain scrollTo animates — and
+       * anything reading window.scrollY before that animation lands (React's
+       * Strict Mode remount, or a lock that reopens quickly) captures a value
+       * near zero and pins the page to the top on the next open.
+       */
+      window.scrollTo({ top: savedScrollY, left: 0, behavior: "instant" });
     };
   }, [active]);
 }

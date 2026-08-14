@@ -25,7 +25,9 @@ export default function ScrollReset() {
     // Only a genuine deep link still has a hash at this point; keep its anchor.
     if (window.location.hash) return;
 
-    const toTop = () => window.scrollTo(0, 0);
+    // "instant" so the global `scroll-behavior: smooth` does not animate the
+    // page down-to-up on load, and so the position lands immediately.
+    const toTop = () => window.scrollTo({ top: 0, left: 0, behavior: "instant" });
     toTop();
 
     /*

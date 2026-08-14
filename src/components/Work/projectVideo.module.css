@@ -18,6 +18,15 @@
 }
 
 /*
+ * Drawn inside the card. Closing the video modal restores focus to this button,
+ * and an outset ring would be clipped by the carousel's horizontal overflow —
+ * which reads as a broken, half-drawn border.
+ */
+.frame:focus-visible {
+  outline-offset: -3px;
+}
+
+/*
  * Layers are absolute rather than grid items on purpose: as grid items their
  * `width: 100%` would resolve against an auto-sized track, so the poster's
  * intrinsic 640px would blow the 320px card open. Absolute + inset pins them to
@@ -84,8 +93,17 @@
   transition: opacity 0.25s ease;
 }
 
+/*
+ * Positioned absolutely rather than centred by the grid. As a grid item its
+ * placement depended on how the track was sized, so before the lazy poster
+ * resolved it could sit off-centre and only settle once the image landed.
+ * Anchoring to the frame keeps it dead centre from first paint.
+ */
 .playBadge {
-  grid-area: 1 / 1;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
   z-index: 1;
   display: grid;
   place-items: center;
@@ -102,7 +120,7 @@
 .frame:focus-visible .playBadge {
   background: var(--accent);
   border-color: var(--accent);
-  transform: scale(1.08);
+  transform: translate(-50%, -50%) scale(1.08);
 }
 
 .unavailable {

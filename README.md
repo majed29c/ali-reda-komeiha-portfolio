@@ -74,8 +74,14 @@ Sheet layout — tab `Sheet1`, headers in row 1, data from row 2:
 - A blank `Section` falls back to `"Other"`.
 - `fileId` is pulled from the Drive link with `/\/d\/([^/]+)/`; a missing or malformed
   link leaves it `null` and the card shows "Video unavailable".
-- Any failure — missing env vars, non-`ok` response, network error — returns `[]`, and
-  the Work section shows "No projects yet." No placeholder data is ever shown.
+- **An empty sheet returns `[]`** and the Work section shows "No projects yet."
+- **A failed fetch throws** (non-`ok` response, network error). That is deliberate: this
+  runs during ISR regeneration, so a throw makes Next keep serving the last good page
+  and retry later, hiding transient Google failures from visitors. Returning `[]` would
+  render an empty Work section *successfully* and cache that emptiness for 60 seconds.
+- Missing env vars still return `[]`, so a fresh clone with no `.env` builds and renders.
+  The trade-off: if Google is unreachable during `next build`, the build fails rather
+  than shipping an empty portfolio.
 - If the tab is renamed, change `SHEET_TAB` in `getProjects.ts` (the only place it appears).
 
 **Sharing is the usual culprit.** The Sheet *and* every Drive video must be set to
@@ -131,8 +137,40 @@ Mounting on demand also keeps a dozen Drive players from booting on page load. A
 `<video>` tag is not used because Drive throttles direct file playback.
 
 The modal portals to `document.body`, traps focus, locks page scroll, closes on Esc /
-backdrop / the close button, and plays an exit animation before unmounting. Drive's
-pop-out button still exists *inside* the player, which is unavoidable.
+backdrop / the close button, and plays an exit animation before unmounting. On phones it
+becomes a full-screen sheet.
+
+**The player streams through our own origin.** Drive's `/preview` iframe is cross-origin,
+so its chrome — pop-out button, centre control bar, bottom bar — cannot be restyled or
+hidden. [/api/video/[fileId]](src/app/api/video/[fileId]/route.ts) proxies the file
+instead, so the modal can use a plain `<video controls>` whose controls are the browser's
+and scale properly. The API key stays server-side and `Range` headers are forwarded both
+ways so seeking works.
+
+### Drive authentication — the part that is not obvious
+
+**An API key cannot fetch Drive media.** It reads metadata fine, but
+`files/{id}?alt=media` comes back as Google's *"your computer or network may be sending
+automated queries"* abuse page, every time. Media needs a real OAuth token.
+
+So [driveAuth.ts](src/lib/driveAuth.ts) signs a JWT with a **service account** key and
+exchanges it for a `drive.readonly` token, cached for its hour of life. Setting it up:
+
+1. Cloud Console → IAM & Admin → **Service Accounts** → create one. **Grant it no
+   project roles** — they are irrelevant here.
+2. **Keys → Add key → JSON**, download it.
+3. **Share the Drive folder with the service account's email** (Viewer). This is the
+   step that grants access; without it the account sees nothing.
+4. Base64 the JSON (`base64 -w0 key.json`) into `GOOGLE_SERVICE_ACCOUNT_KEY` — plain
+   JSON breaks `.env` files because the private key contains newlines.
+5. `NEXT_PUBLIC_DRIVE_NATIVE_PLAYER=true`
+
+Add `GOOGLE_SERVICE_ACCOUNT_KEY` to your host's environment variables at deploy time, or
+production silently falls back to Drive's embed.
+
+Drive is still not a CDN — it enforces per-file download quotas and the bytes flow
+through your server. If traffic grows, move the videos to something built for it
+(Cloudflare Stream, Bunny, Mux, unlisted Vimeo/YouTube).
 
 Posters use a plain `<img>` rather than `next/image`: the URL carries a dynamic `id`
 query param, so allowing it through `images.remotePatterns` would require an

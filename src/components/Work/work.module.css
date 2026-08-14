@@ -103,7 +103,9 @@
   overflow-x: auto;
   scroll-behavior: smooth;
   scroll-snap-type: x mandatory;
-  padding: 24px 2px 6px;
+  /* Extra side padding so focus rings and hover scale are not clipped. */
+  padding: 24px 6px 8px;
+  scroll-padding-inline: 6px;
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
