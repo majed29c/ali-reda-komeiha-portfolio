@@ -47,10 +47,10 @@
   font-size: 24px;
   font-weight: 700;
   letter-spacing: -0.01em;
-}
-
-.spacer {
+  /* Takes the free space itself so the count and arrows stay pinned right
+     instead of drifting inward on narrow screens. */
   flex: 1;
+  min-width: 0;
 }
 
 .categoryMeta {
@@ -102,7 +102,10 @@
   gap: 20px;
   overflow-x: auto;
   scroll-behavior: smooth;
-  scroll-snap-type: x mandatory;
+  /* Proximity, not mandatory: mandatory snapping drags a programmatic scroll
+     back to the nearest card start, which made the arrows look dead, and it
+     also refuses to rest at the far right where the last card is fully shown. */
+  scroll-snap-type: x proximity;
   /* Extra side padding so focus rings and hover scale are not clipped. */
   padding: 24px 6px 8px;
   scroll-padding-inline: 6px;
@@ -119,6 +122,12 @@
   max-width: 320px;
   min-width: 0;
   scroll-snap-align: start;
+}
+
+/* The last card usually cannot align to the left edge, so give it an end
+   snap point — that is where a swipe should settle, fully in view. */
+.card:last-child {
+  scroll-snap-align: end;
 }
 
 .empty {
@@ -138,6 +147,37 @@
   color: var(--text-secondary);
   line-height: 1.55;
   margin-top: 5px;
+}
+
+@media (max-width: 640px) {
+  .categoryHeader {
+    gap: 10px;
+    padding-bottom: 18px;
+  }
+
+  .categoryName {
+    font-size: 19px;
+  }
+
+  .categoryMeta {
+    font-size: 12px;
+  }
+
+  .arrows {
+    gap: 6px;
+  }
+
+  .arrow {
+    width: 32px;
+    height: 32px;
+  }
+
+  /* An arrow that cannot act keeps its slot on desktop to avoid layout jitter;
+     on a phone that empty slot is wide enough to push the film count toward
+     the middle of the header, so collapse it instead. */
+  .arrowDisabled {
+    display: none;
+  }
 }
 
 @media (max-width: 480px) {

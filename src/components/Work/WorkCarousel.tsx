@@ -8,6 +8,19 @@ import styles from "./work.module.css";
 
 const EDGE_TOLERANCE = 8;
 
+/**
+ * Where each card starts inside the scrollable content, in scrollLeft units.
+ * Derived from live rects plus the current scrollLeft, so the numbers stay
+ * the same whether or not a smooth scroll is still animating.
+ */
+const cardStarts = (row: HTMLElement) => {
+  const rowLeft = row.getBoundingClientRect().left;
+  const padLeft = parseFloat(getComputedStyle(row).paddingLeft) || 0;
+  return (Array.from(row.children) as HTMLElement[]).map(
+    (card) => card.getBoundingClientRect().left - rowLeft + row.scrollLeft - padLeft,
+  );
+};
+
 export default function WorkCarousel({ section }: { section: ProjectSection }) {
   const rowRef = useRef<HTMLDivElement>(null);
   const [edges, setEdges] = useState({ prev: false, next: false, overflows: false });
@@ -20,6 +33,8 @@ export default function WorkCarousel({ section }: { section: ProjectSection }) {
     const max = el.scrollWidth - el.clientWidth;
     const next = {
       prev: el.scrollLeft > EDGE_TOLERANCE,
+      // Reaching the far right means the last card is fully in view — nothing
+      // left to reveal, so the arrow goes away.
       next: el.scrollLeft < max - EDGE_TOLERANCE,
       overflows: max > EDGE_TOLERANCE,
     };
@@ -57,13 +72,28 @@ export default function WorkCarousel({ section }: { section: ProjectSection }) {
     };
   }, [measure, scheduleMeasure]);
 
-  const scrollBy = (direction: 1 | -1) => {
+  /** Step to the neighbouring card by index, then let the scroller clamp. */
+  const scrollByCard = (direction: 1 | -1) => {
     const el = rowRef.current;
     if (!el) return;
-    el.scrollBy({
-      left: direction * Math.max(340, el.clientWidth * 0.8),
-      behavior: "smooth",
-    });
+    const starts = cardStarts(el);
+    if (!starts.length) return;
+
+    // Skip card starts that sit a sliver away from where we are: the row can
+    // rest just past one (clamped at the far right, or after a swipe), and
+    // stepping onto it would shift a few pixels and look like a dead arrow.
+    const pitch = starts.length > 1 ? starts[1] - starts[0] : el.clientWidth;
+    const threshold = Math.max(EDGE_TOLERANCE, pitch / 2);
+
+    const target =
+      direction === 1
+        ? starts.find((start) => start > el.scrollLeft + threshold)
+        : starts.filter((start) => start < el.scrollLeft - threshold).pop();
+
+    // Past the last card start there is still the tail of that card to reveal,
+    // so fall back to the far edge rather than ignoring the click.
+    const left = target ?? (direction === 1 ? el.scrollWidth : 0);
+    el.scrollTo({ left, behavior: "smooth" });
   };
 
   const count = section.projects.length;
@@ -73,7 +103,6 @@ export default function WorkCarousel({ section }: { section: ProjectSection }) {
       <div className={styles.categoryHeader}>
         <div className={styles.categoryDot} />
         <div className={styles.categoryName}>{section.name}</div>
-        <div className={styles.spacer} />
         <div className={styles.categoryMeta}>
           {count} {count === 1 ? "film" : "films"}
         </div>
@@ -84,7 +113,7 @@ export default function WorkCarousel({ section }: { section: ProjectSection }) {
             type="button"
             aria-label={`Previous ${section.name} films`}
             className={`${styles.arrow} ${edges.prev ? "" : styles.arrowDisabled}`}
-            onClick={() => scrollBy(-1)}
+            onClick={() => scrollByCard(-1)}
           >
             <ChevronLeft />
           </button>
@@ -92,7 +121,7 @@ export default function WorkCarousel({ section }: { section: ProjectSection }) {
             type="button"
             aria-label={`Next ${section.name} films`}
             className={`${styles.arrow} ${edges.next ? "" : styles.arrowDisabled}`}
-            onClick={() => scrollBy(1)}
+            onClick={() => scrollByCard(1)}
           >
             <ChevronRight size={16} strokeWidth={2.2} />
           </button>
