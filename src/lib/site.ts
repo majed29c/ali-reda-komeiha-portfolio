@@ -1,3 +1,14 @@
+/*
+ * Imported, not written as "/images/...", so the bundler reads each file's real
+ * pixel dimensions and hands them to <Image> itself. A hand-typed width/height
+ * that no longer matches the file gives the browser the wrong aspect ratio to
+ * reserve, and iOS Safari keeps that wrong box on the first load — which is how
+ * the hero cut-out ended up letterboxed inside a black frame. Swapping a photo
+ * now means changing only the path below.
+ */
+import aboutPortrait from "../../public/images/IMG_5728.JPG.jpeg";
+import heroPortrait from "../../public/images/ali-km.png";
+
 /** Single place for the details that change per client hand-off. */
 export const site = {
   name: "Ali Reda Km",
@@ -22,18 +33,19 @@ export const site = {
   },
 
   /**
-   * Drop the final high-res photos into `public/images/` and point these at
-   * them. While empty, a labelled placeholder is rendered in their place.
+   * Drop the final high-res photos into `public/images/`, then point the two
+   * imports at the top of this file at them. Set a slot to `null` to render a
+   * labelled placeholder instead.
+   *
+   * heroPortrait — seated full-body shot, cut out of its white studio backdrop
+   * (alpha PNG, keyed from ali2-.jpg). Because the background is genuinely
+   * gone, the hero needs no multiply blend and no mask to hide a frame edge.
+   *
+   * aboutPortrait — 4:5 portrait for the About section, grayscale + wash.
    */
   images: {
-    /**
-     * Seated full-body shot, cut out of its white studio backdrop (alpha PNG,
-     * keyed from ali2-.jpg). Because the background is genuinely gone, the hero
-     * needs no multiply blend and no mask to hide a frame edge.
-     */
-    heroPortrait: "/images/ali-km.png",
-    /** 4:5 portrait for the About section, grayscale + gradient wash. */
-    aboutPortrait: "/images/IMG_5728.JPG.jpeg",
+    heroPortrait,
+    aboutPortrait,
   },
 };
 

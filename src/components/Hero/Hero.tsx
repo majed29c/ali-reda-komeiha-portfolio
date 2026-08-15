@@ -18,9 +18,8 @@ export default function Hero() {
           className={styles.portraitImage}
           src={site.images.heroPortrait}
           alt={`Portrait of ${site.name}`}
-          /* Intrinsic size of ali2-.jpg; CSS drives the rendered height. */
-          width={896}
-          height={1195}
+          /* width/height come from the static import in site.ts — see the note
+             there. CSS drives the rendered height. */
           sizes="(max-width: 900px) 80vw, 40vw"
           priority
         />
