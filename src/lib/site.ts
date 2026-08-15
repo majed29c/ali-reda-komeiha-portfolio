@@ -31,7 +31,7 @@ export const site = {
      * keyed from ali2-.jpg). Because the background is genuinely gone, the hero
      * needs no multiply blend and no mask to hide a frame edge.
      */
-    heroPortrait: "/images/ali31.png",
+    heroPortrait: "/images/ali-km.png",
     /** 4:5 portrait for the About section, grayscale + gradient wash. */
     aboutPortrait: "/images/IMG_5728.JPG.jpeg",
   },

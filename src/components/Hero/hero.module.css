@@ -122,7 +122,7 @@
   display: block;
   /* "Plain Ampersand" first, as in the body stack — see globals.css. */
   font-family: "Plain Ampersand", var(--font-inter), system-ui, sans-serif;
-  font-size: 0.5em;
+  font-size: 0.44em;
   font-weight: 500;
   line-height: 1.4;
   letter-spacing: -0.01em;
