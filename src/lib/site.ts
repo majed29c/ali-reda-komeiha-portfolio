@@ -27,11 +27,11 @@ export const site = {
    */
   images: {
     /**
-     * Seated full-body shot on a white studio backdrop. The white is dropped by
-     * `mix-blend-mode: multiply` in the hero, so this file must keep its light
-     * background — a cut-out PNG would blend to nothing.
+     * Seated full-body shot, cut out of its white studio backdrop (alpha PNG,
+     * keyed from ali2-.jpg). Because the background is genuinely gone, the hero
+     * needs no multiply blend and no mask to hide a frame edge.
      */
-    heroPortrait: "/images/ali2-.jpg",
+    heroPortrait: "/images/ali31.png",
     /** 4:5 portrait for the About section, grayscale + gradient wash. */
     aboutPortrait: "/images/IMG_5728.JPG.jpeg",
   },

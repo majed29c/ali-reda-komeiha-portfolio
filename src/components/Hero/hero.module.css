@@ -15,82 +15,35 @@
 }
 
 /*
- * Layer 0 — a cool wash sat between the gradient and the photo.
+ * The photo — an alpha cut-out, keyed out of its white studio backdrop.
  *
- * Multiply outputs photo x backdrop, and this gradient's blue channel is only
- * ~0.24, so the blend crushes blue and everything lands orange. No `filter` on
- * the image can undo that: filters run before the blend. Lifting the backdrop
- * toward a blue-white where the subject sits gives multiply more blue to keep,
- * which is what actually cools him — and it leaves the rest of the hero's
- * colour alone. Painted above the background but below the photo.
- */
-.hero::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background: radial-gradient(
-    ellipse 24% 40% at 50% 44%,
-    rgba(233, 241, 255, 0.34) 0%,
-    rgba(233, 241, 255, 0.15) 55%,
-    rgba(233, 241, 255, 0) 100%
-  );
-}
-
-/*
- * Layer 1 — the photo.
- *
- * `mix-blend-mode: multiply` is what makes the white studio backdrop vanish
- * into the orange: multiply keeps whatever is darker, so white drops out
- * entirely and the subject stays. Do not remove it. The brightness lift is
- * there to pay back the darkening multiply applies to the subject too, and the
- * radial mask feathers all four edges so the frame has no visible rectangle.
+ * Everything that used to fight that backdrop is gone with it: no
+ * `mix-blend-mode: multiply` to drop the white, no exposure lift to pay the
+ * blend back, no cool wash underneath to survive it, and no mask to feather a
+ * frame edge that no longer exists. The drop shadow now casts from his
+ * silhouette instead of from a rectangle, so it reads as a shadow.
  */
 .portraitImage {
   position: absolute;
   z-index: 1;
   left: 50%;
-  top: -2%;
+  /*
+   * Anchored to the bottom of the banner, not the top, and pushed 10% past it:
+   * the hero's own `overflow: hidden` then crops his lower legs and the feet of
+   * the chair, so he is planted in the banner rather than floating in it. The
+   * height stays just under 100% + that offset, which keeps the top of his head
+   * inside the frame at every hero height.
+   */
+  bottom: -10%;
+  height: 95%;
   transform: translateX(-50%);
-  height: 106%;
   width: auto;
+  /* Only binds in a narrow, very tall window, where height is not the limit. */
+  max-width: 55%;
   object-fit: contain;
   object-position: 50% 50%;
-  mix-blend-mode: multiply;
-  /*
-   * Brightness is doing two jobs. Multiply only erases backdrop pixels that
-   * are *pure* white — studio grey survives as a pale halo — so lifting
-   * exposure clips those pixels to 255 and the halo disappears. Contrast
-   * sharpens the line between backdrop and subject; saturation stays low so
-   * the skin does not re-warm.
-   */
-  /*
-   * No drop-shadow: it casts from the element's alpha, and a JPEG is fully
-   * opaque, so it shadowed the photo's rectangle rather than the man — a dark
-   * band across his legs instead of a shadow beneath him.
-   */
-  filter: brightness(1.42) contrast(1.16) saturate(0.68);
+  filter: saturate(0.94) drop-shadow(0 22px 38px rgba(40, 8, 0, 0.5));
   pointer-events: none;
-  /*
-   * Feathered on the sides only. The photo runs from -2% to 104%, so the hero's
-   * own overflow already crops its top and bottom edges — a vertical fade adds
-   * nothing there and only dims his legs on the way down.
-   */
-  mask-image: linear-gradient(
-    90deg,
-    rgba(0, 0, 0, 0) 0%,
-    #000 17%,
-    #000 83%,
-    rgba(0, 0, 0, 0) 100%
-  );
-  -webkit-mask-image: linear-gradient(
-    90deg,
-    rgba(0, 0, 0, 0) 0%,
-    #000 17%,
-    #000 83%,
-    rgba(0, 0, 0, 0) 100%
-  );
 }
 
 /* Layer 2 — darkens the top and bottom of the frame so the eyebrow and the
@@ -277,41 +230,16 @@
     min-height: 0;
   }
 
-  /* Stacked layout puts the photo at the top, so the wash follows it. */
-  .hero::before {
-    background: radial-gradient(
-      ellipse 34% 20% at 50% 20%,
-      rgba(233, 241, 255, 0.32) 0%,
-      rgba(233, 241, 255, 0.14) 55%,
-      rgba(233, 241, 255, 0) 100%
-    );
-  }
-
   /*
-   * Stacked, the photo is height-limited and starts at the top, so all four of
-   * its edges fall inside the hero — the desktop side-only feather leaves the
-   * studio backdrop ending as a hard rectangle.
-   *
-   * One radial does the whole job, with no `mask-composite` to depend on. The
-   * geometry is deliberate: rx 50% and ry 65% centred at 35% put the zero-alpha
-   * edge of the ellipse exactly on the left, right and bottom edges of the
-   * frame, so all three fade to nothing, while the top edge falls inside the
-   * solid core and his head is untouched. Solid to 68% keeps his legs before
-   * the fade starts.
+   * Stacked, the photo heads the section instead of standing in the banner, so
+   * it is anchored to the top at a fixed height and the copy is padded clear of
+   * it. No mask: the cut-out has no backdrop rectangle left to hide.
    */
   .portraitImage {
     top: 0;
+    bottom: auto;
     height: var(--portrait-h);
-    mask-image: radial-gradient(
-      ellipse 50% 65% at 50% 35%,
-      #000 68%,
-      rgba(0, 0, 0, 0) 100%
-    );
-    -webkit-mask-image: radial-gradient(
-      ellipse 50% 65% at 50% 35%,
-      #000 68%,
-      rgba(0, 0, 0, 0) 100%
-    );
+    max-width: 88%;
   }
 
   .top {
